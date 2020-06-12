@@ -13,6 +13,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
 
 
 /**
@@ -44,7 +47,7 @@ public class getGITUserInfo {
 		    
 		    
 		    
-		    // Create Git url based on input provided - Test with user: twbs and repo: bootstrap
+		    // Create Git url based on input provided - Test with user: sonalibais and repo: Projects
 		    String gitString = "";
 		    gitString = gitString.concat("https://api.github.com/repos/").concat(user).concat("/").concat(repos).concat("/events");
 		    System.out.println("URL " +gitString);
@@ -80,12 +83,25 @@ public class getGITUserInfo {
 					{
 						inline+=scan.nextLine();
 					}
-					System.out.println("\nJSON Response in String format"); 
-					System.out.println(inline);
+					//System.out.println("\n GIt API Response: "); 
+					//System.out.println(inline);
 					
 					//Close the stream when reading the data has been finished
 					scan.close();
 				}
+				
+				//JSONParser reads the data from string object and break each data into key value pairs
+				JSONParser parse = new JSONParser();
+				//Parse the string in to JSONArray object
+				JSONArray arr = (JSONArray)parse.parse(inline);
+	
+                //Display JSON array    
+		            for(int i=0;i<arr.size();i++){
+		                System.out.println("array is " + arr.get(i));
+
+		            }
+				
+				
 				
 	            // Closing the connection
 				conn.disconnect();
