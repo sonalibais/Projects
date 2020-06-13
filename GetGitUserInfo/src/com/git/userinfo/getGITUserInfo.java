@@ -16,7 +16,7 @@ import java.util.Scanner;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
-
+import org.json.simple.*;
 
 /**
  * @author Sonali Bais
@@ -31,29 +31,12 @@ public class getGITUserInfo {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 
-			
-			// Get values for GIT user name and repository
-			String user;
-            String repos;
-            Scanner ins = new Scanner(System.in);
-		    		    
-            System.out.println("Enter user: ");
-		    user = ins.nextLine();
-		    System.out.println("You entered user: " +user);
-		    
-		    System.out.println("Enter user repository name: ");
-		    repos = ins.nextLine();
-		    System.out.println("You entered repository name: " +repos);
-		    
-		    
-		    
-		    // Create Git url based on input provided - Test with user: sonalibais and repo: Projects
-		    String gitString = "";
-		    gitString = gitString.concat("https://api.github.com/repos/").concat(user).concat("/").concat(repos).concat("/events");
-		    System.out.println("URL " +gitString);
-
-		    
-		    String inline = "";
+		
+		String gitString = "";
+	    gitString = "https://api.github.com/repos/sonalibais/Projects/events";
+	    System.out.println("URL " +gitString);
+		
+	    String inline = "";
 			
 			try
 			{
@@ -71,7 +54,8 @@ public class getGITUserInfo {
 				//Get the status code returned by Git API
 				int code = conn.getResponseCode();
 				System.out.println("Git API Response code: " +code);
-				
+				System.out.println("***********************************************************************************************************************");
+				//System.out.println("-----------------------------------------------------------------------------------------------------------------------");
 				//Checking response code from Git API and if it is not 200(OK Status) then throw exception
 				if(code != 200)
 					throw new RuntimeException("HttpResponseCode: " +code);
@@ -83,8 +67,7 @@ public class getGITUserInfo {
 					{
 						inline+=scan.nextLine();
 					}
-					//System.out.println("\n GIt API Response: "); 
-					//System.out.println(inline);
+
 					
 					//Close the stream when reading the data has been finished
 					scan.close();
@@ -94,14 +77,22 @@ public class getGITUserInfo {
 				JSONParser parse = new JSONParser();
 				//Parse the string in to JSONArray object
 				JSONArray arr = (JSONArray)parse.parse(inline);
-	
+
+				
+				
                 //Display JSON array    
 		            for(int i=0;i<arr.size();i++){
-		                System.out.println("array is " + arr.get(i));
-
-		            }
-				
-				
+			         			    	 
+				        //Create JSON object to store individual entry of JSONArray
+		            	JSONObject rootObj = (JSONObject) arr.get(i);
+		                
+		            	//Extract first level JSON key values for event type and create time.
+		                String event=(String) rootObj.get("type");
+		                String createTime =(String) rootObj.get("created_at").toString();
+		           
+		                System.out.println ("Event Type: "+event+"            Create Time: "+createTime);
+                        System.out.println("-----------------------------------------------------------------------------------------------------------------------");
+		    			 }
 				
 	            // Closing the connection
 				conn.disconnect();
