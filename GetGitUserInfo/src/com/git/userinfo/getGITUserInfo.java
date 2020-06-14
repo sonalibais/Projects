@@ -34,8 +34,27 @@ public class getGITUserInfo {
 
 		
 		String gitString = "";
-	    gitString = "https://api.github.com/repos/sonalibais/Projects/events";
-	    System.out.println("URL " +gitString);
+		String userName = "";
+		String reposName = "";
+		
+		Scanner ins = new Scanner(System.in);
+		
+		System.out.println("Enter User Name: ");
+		userName = ins.nextLine();
+		
+        System.out.println("Enter User Repository Name: ");
+        reposName = ins.nextLine();
+	   
+        if ((userName == null || userName.length() == 0) || (reposName == null || reposName.length() == 0)) {
+        	
+        	System.out.println("Invalid input. User Name and Repository Name are mandatory fields.");
+        }
+        else{
+	    //gitString = "https://api.github.com/repos/sonalibais/Projects/events";
+       	
+        //Generating git url based on input provided
+        gitString = gitString.concat("https://api.github.com/repos/").concat(userName).concat("/").concat(reposName).concat("/events");
+        System.out.println("URL " +gitString);
 		
 	    String inline = "";
 			
@@ -142,9 +161,11 @@ public class getGITUserInfo {
 	            // Closing the connection
 				conn.disconnect();
 			}
+        
 			catch(Exception e)
 			{
 				e.printStackTrace();
 			}
 		}
+	}
 	}
