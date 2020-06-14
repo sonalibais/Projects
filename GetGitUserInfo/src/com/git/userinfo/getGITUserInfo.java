@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
+import java.util.Iterator;
 
 /**
  * @author Sonali Bais
@@ -77,22 +78,66 @@ public class getGITUserInfo {
 				JSONParser parse = new JSONParser();
 				//Parse the string in to JSONArray object
 				JSONArray arr = (JSONArray)parse.parse(inline);
-
 				
-				
-                //Display JSON array    
+                     //Display JSON array    
 		            for(int i=0;i<arr.size();i++){
 			         			    	 
 				        //Create JSON object to store individual entry of JSONArray
 		            	JSONObject rootObj = (JSONObject) arr.get(i);
-		                
+		            	//System.out.println ("Root" +rootObj);
+		            	
 		            	//Extract first level JSON key values for event type and create time.
 		                String event=(String) rootObj.get("type");
 		                String createTime =(String) rootObj.get("created_at").toString();
-		           
-		                System.out.println ("Event Type: "+event+"            Create Time: "+createTime);
-                        System.out.println("-----------------------------------------------------------------------------------------------------------------------");
-		    			 }
+		                
+		                //Extract nested JSON object under actor
+		                JSONObject userInfoObj = (JSONObject)rootObj.get("actor");
+		                //System.out.println ("actor" +actor);
+		                String login = (String) userInfoObj.get("display_login");
+		                
+		                //Display User Name, Event Type and Create Time
+		                System.out.println ("User Name: "+login+"            Event Type: "+event+"            Create Time: "+createTime);
+                      	
+                        //Creating JSON object to extract payload
+		                JSONObject payloadObj = (JSONObject) rootObj.get("payload");
+		                //System.out.println("payload: " +payloadObj);
+		            
+		                //Creating JSON Array to extract commits under payload JSON object
+		                JSONArray commitArr = (JSONArray) payloadObj.get("commits");
+		                //System.out.println("commit: " +commitArr);
+		            
+		                //If user ignores commenting then this array is returned as null so placing a check
+		                if(commitArr != null) {
+				    			
+			    			//Creating an iterator to iterate through commitArr
+		                	Iterator itr = commitArr.iterator();
+		                	
+		                	// Iterate till hasNect() returns true
+			    			while(itr.hasNext())
+			    			{
+			    				// Creating object reference of each commit type element
+			    				Object itrObj = itr.next();
+			    				
+			    				//Json Object to extract data under commit
+			    				JSONObject commitObj = (JSONObject) itrObj;			    				
+			    					    				
+			    				//Json object to extract data under author
+			    				JSONObject authorObj = (JSONObject) commitObj.get("author");
+                                
+			    				//Display author name
+			    				String name = (String) authorObj.get("name");
+			    				System.out.println("Name: " + name);
+			    				
+			    				//Display Comments by user
+			    				String message = (String) commitObj.get("message");
+			    				System.out.println("Comments: " + message);
+			    				
+			    			}
+			    			
+			    			}
+			    			System.out.println("-----------------------------------------------------------------------------------------------------------------------");
+			    			
+		            }
 				
 	            // Closing the connection
 				conn.disconnect();
